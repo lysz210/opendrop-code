@@ -1,0 +1,1 @@
+rootProject.name = "lysz210-fluitrix"
