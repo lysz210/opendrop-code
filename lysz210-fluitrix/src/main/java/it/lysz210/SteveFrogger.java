@@ -85,8 +85,6 @@ public class SteveFrogger extends PApplet {
         try {
             noLoop(); // Stop the draw() loop during setup
 
-//            myPort = new SerialWriter(this, 115200);
-//            myPort = new ConsoleWriter();
 //            transmitter = new SerialTransmitter(this, 115200);
             transmitter = new ConsoleTransmitter();
             delay(100);
@@ -231,9 +229,7 @@ public class SteveFrogger extends PApplet {
     public void dispose() {
         println("Sketch is closing. Clearing all electrodes.");
         if (transmitter != null) {
-            transmitter.clear();
-            delay(50);
-            transmitter.clear();
+            transmitter.close();
         }
         super.dispose();
     }

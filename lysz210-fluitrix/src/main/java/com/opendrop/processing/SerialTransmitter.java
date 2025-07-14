@@ -6,9 +6,11 @@ import processing.core.PApplet;
 
 public class SerialTransmitter implements Transmitter {
     private final Writer writer;
+    private final PApplet applet;
 
     public SerialTransmitter(PApplet applet, int rate) {
         this.writer = new SerialWriter(applet, rate);
+        this.applet = applet;
     }
 
     @Override
@@ -47,6 +49,8 @@ public class SerialTransmitter implements Transmitter {
 
     @Override
     public void close() {
+        clear();
+        applet.delay(50);
         writer.stop();
     }
 }
