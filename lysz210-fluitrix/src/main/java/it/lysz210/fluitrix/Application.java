@@ -13,8 +13,4 @@ public class Application extends PApplet {
         background(0);
         ellipse(mouseX, mouseY, 20, 20);
     }
-
-    public static void main(String... args){
-        PApplet.main("proc.sketches.First");
-    }
 }
