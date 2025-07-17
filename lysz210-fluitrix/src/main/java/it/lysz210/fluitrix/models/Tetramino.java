@@ -6,34 +6,60 @@ public abstract class Tetramino implements Grid {
     public static final int WIDTH = 3;
     public static final int HEIGHT = 3;
 
-    private final DropletType[][] grid;
+    public static final int INDEX_TOP = 0;
+    public static final int INDEX_BOTTOM = 2;
+    public static final int INDEX_CENTER = 1;
+    public static final int INDEX_LEFT = 0;
+    public static final int INDEX_RIGHT = 2;
+
+    public static final Coordinate2D TOP_LEFT = new Coordinate2D(INDEX_TOP, INDEX_LEFT);
+    public static final Coordinate2D TOP_CENTER = new Coordinate2D(INDEX_TOP, INDEX_CENTER);
+    public static final Coordinate2D TOP_RIGHT = new Coordinate2D(INDEX_TOP, INDEX_RIGHT);
+
+    public static final Coordinate2D CENTER_LEFT = new Coordinate2D(INDEX_CENTER, INDEX_LEFT);
+    public static final Coordinate2D CENTER_CENTER = new Coordinate2D(INDEX_CENTER, INDEX_CENTER);
+    public static final Coordinate2D CENTER_RIGHT = new Coordinate2D(INDEX_CENTER, INDEX_RIGHT);
+
+    public static final Coordinate2D BOTTOM_LEFT = new Coordinate2D(INDEX_BOTTOM, INDEX_LEFT);
+    public static final Coordinate2D BOTTOM_CENTER = new Coordinate2D(INDEX_BOTTOM, INDEX_CENTER);
+    public static final Coordinate2D BOTTOM_RIGHT = new Coordinate2D(INDEX_BOTTOM, INDEX_RIGHT);
+
+    private final byte[][] grid;
     private Orientation orientation;
     protected Tetramino() {
-        this.grid = new DropletType[WIDTH][HEIGHT];
+        this.grid = new byte[WIDTH][HEIGHT];
         this.orientation = Orientation.UP;
     }
 
-    protected void add(Coordinate2D position) {
-        this.grid[position.x()][position.y()] = DropletType.PIECE;
+    protected void inc(Coordinate2D position) {
+        this.grid[position.x()][position.y()]++;
     }
 
-    protected void add(List<Coordinate2D> positions) {
-        positions.forEach(this::add);
+    protected void inc(List<Coordinate2D> positions) {
+        positions.forEach(this::inc);
     }
 
-    protected void move(Movement move) {
-        var source = move.source();
-        var destination = move.destination();
-        this.grid[destination.x()][destination.y()] = this.grid[source.x()][source.y()];
-        this.grid[source.x()][source.y()] = null;
+    protected void dec(Coordinate2D position) {
+        if (this.grid[position.x()][position.y()] > 0) {
+            this.grid[position.x()][position.y()]--;
+        }
     }
 
-    protected void delete(Coordinate2D position) {
-        this.grid[position.x()][position.y()] = null;
+    protected void dec(List<Coordinate2D> positions) {
+        positions.forEach(this::dec);
     }
 
-    protected void delete(List<Coordinate2D> positions) {
-        positions.forEach(this::delete);
+    protected void move(Movement movement) {
+        var source = movement.source();
+        var destination = movement.destination();
+        if (getCell(source) > 0) {
+            dec(source);
+            inc(destination);
+        }
+    }
+
+    protected void move(List<Movement> moves) {
+        moves.forEach(this::move);
     }
 
     public abstract List<Action> getRotationSequence();
@@ -60,11 +86,18 @@ public abstract class Tetramino implements Grid {
         this.setOrientation(this.orientation.next());
     }
 
+    public byte getCell(Coordinate2D position) {
+        return this.grid[position.x()][position.y()];
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append("dir: ");
+        sb.append(this.orientation.symbol);
+        sb.append("\n");
         for (int i = 0; i < WIDTH; i++) {
-            for (DropletType droplet : this.grid[i]) {
-                sb.append(droplet == null ? '_' : droplet.value);
+            for (byte droplet : this.grid[i]) {
+                sb.append(droplet);
             }
             sb.append('\n');
         }
@@ -84,40 +117,36 @@ public abstract class Tetramino implements Grid {
     static class I extends Tetramino {
         protected I () {
             super();
-            add(List.of(
-                    new Coordinate2D(0, 1),
-                    new Coordinate2D(1, 1),
-                    new Coordinate2D(2, 1)
+            inc(List.of(
+                    TOP_CENTER,
+                    CENTER_CENTER,
+                    BOTTOM_CENTER
             ));
         }
         @Override
         public List<Action> getRotationSequence(){
             return switch (this.getOrientation()) {
                 case UP, DOWN -> List.of(
-                        () -> this.delete(List.of(
-                                    new Coordinate2D(0, 1),
-                                    new Coordinate2D(2, 1)
+                        () -> this.move(List.of(
+                                    new Movement(TOP_CENTER, CENTER_CENTER),
+                                    new Movement(BOTTOM_CENTER, CENTER_CENTER)
                             )),
-                        () -> {
-                            this.add(List.of(
-                                    new Coordinate2D(1, 0),
-                                    new Coordinate2D(1, 2)
-                            ));
-                            this.nextOrientation();
-                        }
+                        () -> this.move(List.of(
+                                    new Movement(CENTER_CENTER, CENTER_LEFT),
+                                    new Movement(CENTER_CENTER, CENTER_RIGHT)
+                            )),
+                        this::nextOrientation
                 );
                 case RIGHT, LEFT -> List.of(
-                        () -> this.delete(List.of(
-                                new Coordinate2D(1, 0),
-                                new Coordinate2D(1, 2)
+                        () -> this.move(List.of(
+                                new Movement(CENTER_LEFT, CENTER_CENTER),
+                                new Movement(CENTER_RIGHT, CENTER_CENTER)
                         )),
-                        () -> {
-                            this.add(List.of(
-                                    new Coordinate2D(0, 1),
-                                    new Coordinate2D(2, 1)
-                            ));
-                            this.nextOrientation();
-                        }
+                        () -> this.move(List.of(
+                                new Movement(CENTER_CENTER, TOP_CENTER),
+                                new Movement(CENTER_CENTER, BOTTOM_CENTER)
+                            )),
+                        this::nextOrientation
                 );
             };
         }
