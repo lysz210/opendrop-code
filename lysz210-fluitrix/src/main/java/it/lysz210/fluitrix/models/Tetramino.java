@@ -1,6 +1,7 @@
 package it.lysz210.fluitrix.models;
 
 import java.util.List;
+import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -257,10 +258,12 @@ public abstract class Tetramino implements Grid {
     }
 
     private static final List<Supplier<Tetramino>> PRODUCERS = List.of(
-            Tetramino::createI
+            Tetramino::createI,
+            Tetramino::createL
     );
     public static Tetramino createRandom() {
-        return PRODUCERS.getFirst().get();
+        var rnd = new Random();
+        return PRODUCERS.get(rnd.nextInt(PRODUCERS.size())).get();
     }
 
 }
