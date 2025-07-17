@@ -9,8 +9,8 @@ public abstract class Tetramino implements Grid {
     public static final int INDEX_TOP = 0;
     public static final int INDEX_BOTTOM = 2;
     public static final int INDEX_CENTER = 1;
-    public static final int INDEX_LEFT = 0;
-    public static final int INDEX_RIGHT = 2;
+    public static final int INDEX_LEFT = 2;
+    public static final int INDEX_RIGHT = 0;
 
     public static final Coordinate2D TOP_LEFT = new Coordinate2D(INDEX_TOP, INDEX_LEFT);
     public static final Coordinate2D TOP_CENTER = new Coordinate2D(INDEX_TOP, INDEX_CENTER);
@@ -24,11 +24,13 @@ public abstract class Tetramino implements Grid {
     public static final Coordinate2D BOTTOM_CENTER = new Coordinate2D(INDEX_BOTTOM, INDEX_CENTER);
     public static final Coordinate2D BOTTOM_RIGHT = new Coordinate2D(INDEX_BOTTOM, INDEX_RIGHT);
 
+    private Coordinate2D position;
     private final byte[][] grid;
     private Orientation orientation;
     protected Tetramino() {
         this.grid = new byte[WIDTH][HEIGHT];
         this.orientation = Orientation.UP;
+        this.position = new Coordinate2D(0, 0);
     }
 
     protected void incDroplet(Coordinate2D position) {
@@ -65,6 +67,16 @@ public abstract class Tetramino implements Grid {
     public abstract List<Action> getRotationSequence();
 
     @Override
+    public Coordinate2D getPosition() {
+        return new Coordinate2D(this.position);
+    }
+    @Override
+    public Coordinate2D move(Orientation direction) {
+        this.position = this.position.move(direction).destination();
+        return this.getPosition();
+    }
+
+    @Override
     public int getWidth() {
         return WIDTH;
     }
@@ -72,6 +84,17 @@ public abstract class Tetramino implements Grid {
     @Override
     public int getHeight() {
         return HEIGHT;
+    }
+
+    @Override
+    public boolean[][] toElectrods() {
+        var electrods = new boolean[this.getWidth()][this.getHeight()];
+        for (int x = 0; x < this.getWidth(); x++) {
+            for (int y = 0; y < this.getHeight(); y++) {
+                electrods[x][y] = this.grid[x][y] > 0;
+            }
+        }
+        return electrods;
     }
 
     public Orientation getOrientation() {

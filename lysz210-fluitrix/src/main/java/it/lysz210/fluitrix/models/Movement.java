@@ -8,8 +8,8 @@ public record Movement(
         var destination = switch (direction) {
             case UP -> new Coordinate2D(source.x() - 1, source.y());
             case DOWN -> new Coordinate2D(source.x() + 1, source.y());
-            case LEFT -> new Coordinate2D(source.x(), source.y() - 1);
-            case RIGHT -> new Coordinate2D(source.x(), source.y() + 1);
+            case LEFT -> new Coordinate2D(source.x(), source.y() + 1);
+            case RIGHT -> new Coordinate2D(source.x(), source.y() - 1);
         };
         return new Movement(source, destination);
     }
