@@ -31,35 +31,35 @@ public abstract class Tetramino implements Grid {
         this.orientation = Orientation.UP;
     }
 
-    protected void inc(Coordinate2D position) {
+    protected void incDroplet(Coordinate2D position) {
         this.grid[position.x()][position.y()]++;
     }
 
-    protected void inc(List<Coordinate2D> positions) {
-        positions.forEach(this::inc);
+    protected void incDroplet(List<Coordinate2D> positions) {
+        positions.forEach(this::incDroplet);
     }
 
-    protected void dec(Coordinate2D position) {
+    protected void decDroplet(Coordinate2D position) {
         if (this.grid[position.x()][position.y()] > 0) {
             this.grid[position.x()][position.y()]--;
         }
     }
 
-    protected void dec(List<Coordinate2D> positions) {
-        positions.forEach(this::dec);
+    protected void decDroplet(List<Coordinate2D> positions) {
+        positions.forEach(this::decDroplet);
     }
 
-    protected void move(Movement movement) {
+    protected void moveDroplet(Movement movement) {
         var source = movement.source();
         var destination = movement.destination();
         if (getCell(source) > 0) {
-            dec(source);
-            inc(destination);
+            decDroplet(source);
+            incDroplet(destination);
         }
     }
 
-    protected void move(List<Movement> moves) {
-        moves.forEach(this::move);
+    protected void moveDroplet(List<Movement> moves) {
+        moves.forEach(this::moveDroplet);
     }
 
     public abstract List<Action> getRotationSequence();
@@ -117,7 +117,7 @@ public abstract class Tetramino implements Grid {
     static class I extends Tetramino {
         protected I () {
             super();
-            inc(List.of(
+            incDroplet(List.of(
                     TOP_CENTER,
                     CENTER_CENTER,
                     BOTTOM_CENTER
@@ -127,24 +127,24 @@ public abstract class Tetramino implements Grid {
         public List<Action> getRotationSequence(){
             return switch (this.getOrientation()) {
                 case UP, DOWN -> List.of(
-                        () -> this.move(List.of(
-                                    new Movement(TOP_CENTER, CENTER_CENTER),
-                                    new Movement(BOTTOM_CENTER, CENTER_CENTER)
+                        () -> this.moveDroplet(List.of(
+                                    TOP_CENTER.moveDown(),
+                                    BOTTOM_CENTER.moveUp()
                             )),
-                        () -> this.move(List.of(
-                                    new Movement(CENTER_CENTER, CENTER_LEFT),
-                                    new Movement(CENTER_CENTER, CENTER_RIGHT)
+                        () -> this.moveDroplet(List.of(
+                                    CENTER_CENTER.moveLeft(),
+                                    CENTER_CENTER.moveRight()
                             )),
                         this::nextOrientation
                 );
                 case RIGHT, LEFT -> List.of(
-                        () -> this.move(List.of(
-                                new Movement(CENTER_LEFT, CENTER_CENTER),
-                                new Movement(CENTER_RIGHT, CENTER_CENTER)
+                        () -> this.moveDroplet(List.of(
+                                CENTER_LEFT.moveRight(),
+                                CENTER_RIGHT.moveLeft()
                         )),
-                        () -> this.move(List.of(
-                                new Movement(CENTER_CENTER, TOP_CENTER),
-                                new Movement(CENTER_CENTER, BOTTOM_CENTER)
+                        () -> this.moveDroplet(List.of(
+                                CENTER_CENTER.moveUp(),
+                                CENTER_CENTER.moveDown()
                             )),
                         this::nextOrientation
                 );
