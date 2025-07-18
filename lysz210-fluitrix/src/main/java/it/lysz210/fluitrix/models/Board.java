@@ -5,7 +5,7 @@ import it.lysz210.fluitrix.utils.GridMerger;
 public class Board implements Grid {
     private final int width;
     private final int height;
-    private final byte[][] grid;
+    private byte[][] grid;
     private final Coordinate2D position;
     private final GridMerger merger;
 
@@ -15,7 +15,7 @@ public class Board implements Grid {
 
         this.grid = new byte[width][height];
         this.position = new Coordinate2D(0, 0);
-        this.merger = new GridMerger(this.grid);
+        this.merger = new GridMerger();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Board implements Grid {
     }
 
     public void merge(Grid other) {
-        this.merger.accept(other);
+        this.grid = this.merger.apply(this, other);
     }
 
     public boolean isTouchingFloor(Grid other) {

@@ -16,4 +16,14 @@ public class GridToElectrodsMapper implements Function<Grid, boolean[][]> {
         }
         return electrods;
     }
+
+    public boolean[][] apply(byte[][] grid) {
+        var electrods = new boolean[grid.length][grid[0].length];
+        for (int x = 0; x < grid.length; x++) {
+            for (int y = 0; y < grid[0].length; y++) {
+                electrods[x][y] = grid[x][y] > 0;
+            }
+        }
+        return electrods;
+    }
 }

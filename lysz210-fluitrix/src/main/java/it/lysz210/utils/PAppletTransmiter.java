@@ -19,7 +19,7 @@ public class PAppletTransmiter implements Transmitter {
     public void transmit(boolean[][] electrodes) {
         var width = electrodes.length;
         var height = electrodes[0].length;
-
+        applet.fill(170);
         for (int y = 0; y < width; y++) {
             for (int x = 1; x <= height; x++) {
                 var offsetX = offset.x() + ((x - 1) * cellSize);
