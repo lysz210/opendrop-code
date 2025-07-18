@@ -8,7 +8,7 @@ public enum Orientation {
     LEFT('←');
 
     public final char symbol;
-    private Orientation(char symbol) {
+    Orientation(char symbol) {
         this.symbol = symbol;
     }
 
