@@ -64,7 +64,9 @@ public class Game {
 
     public void process(GameCommand command) {
         if (!currentPhase.accept(command)) {
-//            LOGGER.warn("Command {} not valid in game phase {}", command, currentPhase);
+            if (currentPhase == Phase.GAME_OVER) {
+                LOGGER.warn("==== Game over ====");
+            }
             return;
         }
         switch (command) {
