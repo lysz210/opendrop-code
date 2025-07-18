@@ -29,6 +29,11 @@ public class PAppletTransmiter implements Transmitter {
                 }
             }
         }
+
+        applet.fill(255, 1, 255);
+        var offsetX = offset.x();
+        var offsetY = offset.y() + (3 * cellSize);
+        applet.line(offsetX, offsetY, offsetX + (height * cellSize), offsetY);
     }
 
     @Override

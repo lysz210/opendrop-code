@@ -124,11 +124,215 @@ public abstract class Tetramino implements Grid {
         return this.grid[position.x()][position.y()];
     }
 
-//    class T extends Tetramino {}
-//    class J extends Tetramino {}
-//    class O extends Tetramino {}
-//    class S extends Tetramino {}
-//    class Z extends Tetramino {}
+    static class T extends Tetramino {
+
+        @Override
+        protected Stream<Action> internalInitializationSequence() {
+            return Stream.of(
+                    () -> incDroplet(List.of(
+                            TOP_CENTER,
+                            CENTER_CENTER,
+                            BOTTOM_CENTER,
+                            TOP_LEFT
+                    )),
+                    () -> moveDroplet(List.of(
+                            TOP_LEFT.moveDown(),
+                            TOP_CENTER.moveDown()
+                    )),
+                    () -> moveDroplet(CENTER_CENTER.moveRight())
+            );
+        }
+
+        @Override
+        protected Stream<Action> internalRotationSequence() {
+            return switch (getOrientation()) {
+                case UP -> Stream.of(
+                        () -> moveDroplet(CENTER_RIGHT.moveLeft()),
+                        () -> moveDroplet(CENTER_CENTER.moveUp())
+                );
+                case RIGHT -> Stream.of(
+                        () -> moveDroplet(BOTTOM_CENTER.moveUp()),
+                        () -> moveDroplet(CENTER_CENTER.moveRight())
+                );
+                case DOWN -> Stream.of(
+                        () -> moveDroplet(CENTER_LEFT.moveRight()),
+                        () -> moveDroplet(CENTER_CENTER.moveDown())
+                );
+                case LEFT -> Stream.of(
+                        () -> moveDroplet(TOP_CENTER.moveDown()),
+                        () -> moveDroplet(CENTER_CENTER.moveLeft())
+                );
+            };
+        }
+    }
+    static class J extends Tetramino {
+
+        @Override
+        protected Stream<Action> internalInitializationSequence() {
+            return Stream.of(
+                    () -> incDroplet(List.of(
+                            TOP_CENTER,
+                            CENTER_CENTER,
+                            BOTTOM_CENTER
+                    )),
+                    () -> incDroplet(BOTTOM_LEFT)
+            );
+        }
+
+        @Override
+        protected Stream<Action> internalRotationSequence() {
+            return switch (getOrientation()) {
+                case UP -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                BOTTOM_LEFT.moveUp(),
+                                TOP_CENTER.moveLeft(),
+                                BOTTOM_CENTER.moveUp()
+                        )),
+                        () -> moveDroplet(CENTER_CENTER.moveRight())
+                );
+                case RIGHT -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                TOP_LEFT.moveRight(),
+                                CENTER_RIGHT.moveUp(),
+                                CENTER_LEFT.moveRight()
+                        )),
+                        () -> moveDroplet(CENTER_CENTER.moveDown())
+                );
+                case DOWN -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                BOTTOM_CENTER.moveRight(),
+                                TOP_RIGHT.moveDown(),
+                                TOP_CENTER.moveDown()
+                        )),
+                        () -> moveDroplet(CENTER_CENTER.moveLeft())
+                );
+                case LEFT -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                CENTER_LEFT.moveDown(),
+                                BOTTOM_RIGHT.moveLeft(),
+                                CENTER_RIGHT.moveLeft()
+                        )),
+                        () -> moveDroplet(CENTER_CENTER.moveUp())
+                );
+            };
+        }
+    }
+    static class O extends Tetramino {
+        @Override
+        protected Stream<Action> internalInitializationSequence() {
+            return Stream.of(
+                    () -> incDroplet(List.of(
+                            TOP_CENTER, TOP_LEFT
+                    )),
+                    () -> incDroplet(List.of(
+                            CENTER_CENTER, CENTER_LEFT
+                    )),
+                    () -> moveDroplet(List.of(
+                            TOP_CENTER.moveDown(),
+                            TOP_LEFT.moveDown()
+                    )),
+                    () -> moveDroplet(List.of(
+                            CENTER_CENTER.moveDown(),
+                            CENTER_LEFT.moveDown()
+                    ))
+            );
+        }
+
+        @Override
+        protected Stream<Action> internalRotationSequence() {
+            return Stream.empty();
+        }
+    }
+    static class Z extends Tetramino {
+        @Override
+        protected Stream<Action> internalInitializationSequence() {
+            return Stream.of(
+                    () -> incDroplet(List.of(
+                            TOP_CENTER,
+                            CENTER_CENTER,
+                            BOTTOM_CENTER,
+                            TOP_LEFT
+                    )),
+                    () -> moveDroplet(List.of(
+                            TOP_LEFT.moveDown(),
+                            TOP_CENTER.moveDown(),
+                            CENTER_CENTER.moveDown(),
+                            BOTTOM_CENTER.moveRight()
+                    ))
+            );
+        }
+
+        @Override
+        protected Stream<Action> internalRotationSequence() {
+            return switch (getOrientation()) {
+                case UP, DOWN -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                BOTTOM_CENTER.moveUp(),
+                                BOTTOM_RIGHT.moveLeft()
+                        )),
+                        () -> moveDroplet(List.of(
+                                BOTTOM_CENTER.moveLeft(),
+                                CENTER_CENTER.moveUp()
+                        ))
+                );
+                case RIGHT, LEFT -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                TOP_CENTER.moveDown(),
+                                BOTTOM_LEFT.moveRight()
+                        )),
+                        () -> moveDroplet(List.of(
+                                BOTTOM_CENTER.moveRight(),
+                                CENTER_CENTER.moveDown()
+                        ))
+                );
+            };
+        }
+    }
+    static class S extends Tetramino {
+        @Override
+        protected Stream<Action> internalInitializationSequence() {
+            return Stream.of(
+                    () -> incDroplet(List.of(
+                            TOP_CENTER,
+                            CENTER_CENTER,
+                            BOTTOM_CENTER,
+                            TOP_RIGHT
+                    )),
+                    () -> moveDroplet(List.of(
+                            TOP_RIGHT.moveDown(),
+                            TOP_CENTER.moveDown(),
+                            CENTER_CENTER.moveDown(),
+                            BOTTOM_CENTER.moveLeft()
+                    ))
+            );
+        }
+
+        @Override
+        protected Stream<Action> internalRotationSequence() {
+            return switch (getOrientation()) {
+                case UP, DOWN -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                BOTTOM_LEFT.moveUp(),
+                                CENTER_RIGHT.moveLeft()
+                        )),
+                        () -> moveDroplet(List.of(
+                                CENTER_LEFT.moveUp(),
+                                CENTER_CENTER.moveLeft()
+                        ))
+                );
+                case RIGHT, LEFT -> Stream.of(
+                        () -> moveDroplet(List.of(
+                                TOP_LEFT.moveDown(),
+                                CENTER_LEFT.moveRight()
+                        )),
+                        () -> moveDroplet(List.of(
+                                CENTER_LEFT.moveDown(),
+                                CENTER_CENTER.moveRight()
+                        ))
+                );
+            };
+        }
+    }
 
     /**
      * It will be a 3x1 to fit inside the grid
@@ -231,10 +435,34 @@ public abstract class Tetramino implements Grid {
     public static Tetramino createL() {
         return new L();
     }
+    public static Tetramino createJ() {
+        return new J();
+    }
+
+    public static Tetramino createT() {
+        return new T();
+    }
+
+    public static Tetramino createO() {
+        return new O();
+    }
+
+    public static Tetramino createZ() {
+        return new Z();
+    }
+
+    public static Tetramino createS() {
+        return new S();
+    }
 
     private static final List<Supplier<Tetramino>> PRODUCERS = List.of(
             Tetramino::createI,
-            Tetramino::createL
+            Tetramino::createL,
+            Tetramino::createJ,
+            Tetramino::createT,
+            Tetramino::createO,
+            Tetramino::createZ,
+            Tetramino::createS
     );
     public static Tetramino createRandom() {
         var rnd = new Random();
