@@ -51,4 +51,42 @@ public class Board implements Grid {
     public void merge(Grid other) {
         this.merger.accept(other);
     }
+
+    public boolean isTouchingFloor(Grid other) {
+        var offsetX = other.getPosition().x();
+        var offsetY = other.getPosition().y();
+
+        if (offsetX >= this.getWidth() -1) {
+            throw new RuntimeException("Is underground!");
+        }
+
+        if (offsetY  >= this.getHeight()) {
+            throw new RuntimeException("Is outside the left wall!");
+        }
+
+        if (offsetY <= 0 - other.getWidth()) {
+            throw new RuntimeException("Is outside the right wall!");
+        }
+
+        for (int x = other.getWidth() -1; x >= 0; x--) {
+            var newX = x + offsetX;
+            if (newX >= this.getWidth() || newX < 0) {
+                continue;
+            }
+            for (int y = other.getHeight() -1; y >= 0; y--) {
+                var newY = y + offsetY;
+                if (newY >= this.getHeight() || newY < 0) {
+                    continue;
+                }
+                var otherCellActive = other.getCell(new Coordinate2D(x, y)) > 0;
+                if (!otherCellActive && newX + 1 >= this.getWidth()) {
+                    continue;
+                }
+                if (otherCellActive && (newX + 1 >= this.getWidth() || this.grid[newX + 1][newY] > 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

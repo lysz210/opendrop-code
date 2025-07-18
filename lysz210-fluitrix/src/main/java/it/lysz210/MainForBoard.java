@@ -14,15 +14,39 @@ public class MainForBoard {
         final var toString = new GridToStringMapper();
 
         final var board = new Board(WIDTH, HEIGHT);
-        final var tetramino = Tetramino.createI();
+        var tetramino = Tetramino.createI();
         tetramino.getInitializationSequence().forEach(Action::execute);
 
         System.out.println(toString.apply(tetramino));
 
         System.out.println(toString.apply(board));
 
-        tetramino.move(Orientation.DOWN);
+        for (int i = 0; i < 11; i++) {
+            tetramino.move(Orientation.DOWN);
+        }
         board.merge(tetramino);
+        tetramino = Tetramino.createI();
+
+        tetramino.getInitializationSequence().forEach(Action::execute);
+//        tetramino.getRotationSequence().forEach(Action::execute);
+        for (int i = 0; i < 8; i++) {
+            tetramino.move(Orientation.DOWN);
+        }
+//        tetramino.move(Orientation.LEFT);
+
+        boolean isTouching = board.isTouchingFloor(tetramino);
+        board.merge(tetramino);
+        System.out.println(toString.apply(board));
+        System.out.println(isTouching ? "Touching floor" : "Not Touching");
+
+        for (int i = 0; i < 4; i++) {
+            tetramino = Tetramino.createI();
+            tetramino.getInitializationSequence().forEach(Action::execute);
+            do {
+                tetramino.move(Orientation.DOWN);
+            } while (!board.isTouchingFloor(tetramino));
+            board.merge(tetramino);
+        }
 
         System.out.println(toString.apply(board));
     }
