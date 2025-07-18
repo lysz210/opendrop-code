@@ -108,17 +108,6 @@ public abstract class Tetramino implements Grid {
         return HEIGHT;
     }
 
-    @Override
-    public boolean[][] toElectrods() {
-        var electrods = new boolean[this.getWidth()][this.getHeight()];
-        for (int x = 0; x < this.getWidth(); x++) {
-            for (int y = 0; y < this.getHeight(); y++) {
-                electrods[x][y] = this.grid[x][y] > 0;
-            }
-        }
-        return electrods;
-    }
-
     public Orientation getOrientation() {
         return orientation;
     }
@@ -133,20 +122,6 @@ public abstract class Tetramino implements Grid {
 
     public byte getCell(Coordinate2D position) {
         return this.grid[position.x()][position.y()];
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("dir: ");
-        sb.append(this.orientation.symbol);
-        sb.append("\n");
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 1; y <= HEIGHT; y++) {
-                sb.append(this.grid[x][HEIGHT - y]);
-            }
-            sb.append('\n');
-        }
-        return sb.toString();
     }
 
 //    class T extends Tetramino {}

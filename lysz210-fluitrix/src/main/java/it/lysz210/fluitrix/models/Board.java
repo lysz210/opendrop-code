@@ -3,12 +3,16 @@ package it.lysz210.fluitrix.models;
 public class Board implements Grid {
     private final int width;
     private final int height;
-    private final DropletType[][] droplets;
+    private final byte[][] grid;
+    private final Coordinate2D position;
+
 
     public Board(int width, int height) {
         this.width = width;
         this.height = height;
-        this.droplets = new DropletType[width][height];
+
+        this.grid = new byte[width][height];
+        this.position = new Coordinate2D(0, 0);
     }
 
     @Override
@@ -23,19 +27,21 @@ public class Board implements Grid {
 
     @Override
     public Coordinate2D getPosition() {
-        // todo: implementation
-        return null;
+        return new Coordinate2D(position);
     }
 
+    /**
+     * The board never moves
+     * @param direction not used
+     * @return position
+     */
     @Override
     public Coordinate2D move(Orientation direction) {
-        // todo: implementation
-        return null;
+        return new Coordinate2D(position);
     }
 
     @Override
-    public boolean[][] toElectrods() {
-        // todo: implementation
-        return new boolean[0][];
+    public byte getCell(Coordinate2D position) {
+        return grid[position.x()][position.y()];
     }
 }
