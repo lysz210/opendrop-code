@@ -22,6 +22,8 @@ dependencies {
     implementation("org.processing", "core", processingVersion)
     // https://mvnrepository.com/artifact/org.processing/serial
     implementation("org.processing","serial",processingVersion)
+    // https://mvnrepository.com/artifact/org.processing/net
+    implementation("org.processing","net",processingVersion)
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
