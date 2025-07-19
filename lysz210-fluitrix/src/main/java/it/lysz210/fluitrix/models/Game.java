@@ -17,6 +17,7 @@ public class Game {
         INITIALIZATION(Set.of(GameCommand.PROCESS_STEP)),
         INIT_TETRAMINO(Set.of(GameCommand.PROCESS_STEP)),
         TETRAMINO_INPUT(Set.of(GameCommand.ROTATE, GameCommand.MOVE_LEFT, GameCommand.MOVE_RIGHT, GameCommand.DROP_DOWN)),
+        CLEAR_LINES(Set.of(GameCommand.PROCESS_STEP)),
         CHECK(Set.of(GameCommand.PROCESS_STEP)),
         ACTION(Set.of(GameCommand.PROCESS_STEP)),
         GAME_OVER(Set.of(GameCommand.RESET));
@@ -88,7 +89,8 @@ public class Game {
         public void execute() {
             if (board.isTouchingFloor(tetramino)) {
                 board.merge(tetramino);
-                currentPhase = Phase.CHECK;
+                tetramino = null;
+                currentPhase = Phase.CLEAR_LINES;
                 return;
             }
             actionsQueue.add(() -> tetramino.move(Orientation.DOWN));
@@ -132,6 +134,9 @@ public class Game {
             case Phase.INITIALIZATION:
                 initTetramino();
                 return;
+            case Phase.CLEAR_LINES:
+                clearLines();
+                return;
             case Phase.CHECK:
                 check();
                 return;
@@ -145,6 +150,12 @@ public class Game {
         action.execute();
     }
 
+    private void clearLines() {
+        actionsQueue.addAll(board.clearLines());
+        actionsQueue.add(() -> currentPhase = Phase.CHECK);
+        currentPhase = Phase.ACTION;
+    }
+
     private void check() {
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < board.getHeight(); y++) {
@@ -154,6 +165,7 @@ public class Game {
                 }
             }
         }
+
         // not over yet
         this.initTetramino();
     }

@@ -2,6 +2,10 @@ package it.lysz210.fluitrix.models;
 
 import it.lysz210.fluitrix.utils.GridMerger;
 
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 public class Board implements Grid {
     private final int width;
     private final int height;
@@ -16,6 +20,10 @@ public class Board implements Grid {
         this.grid = new byte[width][height];
         this.position = new Coordinate2D(0, 0);
         this.merger = new GridMerger();
+
+        for (int i = 0; i < height; i++) {
+            grid[13][i] = 1;
+        }
     }
 
     @Override
@@ -88,5 +96,50 @@ public class Board implements Grid {
             }
         }
         return false;
+    }
+
+    public List<Action> clearLines() {
+        var actionSequenceBuilder = Stream.<Action>builder();
+        for (int x = 0; x < this.getWidth(); x++) {
+            boolean isFull = true;
+            for (int y = 0; y < this.getHeight() && isFull; y++) {
+                isFull = grid[x][y] > 0;
+            }
+            if (isFull) {
+                IntStream.iterate(x, n -> n - 1).limit(x + 1)
+                    .mapToObj(BubbleUpAction::new)
+                    .forEach(actionSequenceBuilder::add);
+            }
+        }
+        return actionSequenceBuilder.build().toList();
+    }
+
+    class BubbleUpAction implements Action {
+        private final int line;
+        private boolean done;
+
+        public BubbleUpAction(int line) {
+            this.line = line;
+            done = false;
+        }
+
+        @Override
+        public void execute() {
+            if (done) {
+                return;
+            }
+            if (line < 0) {
+                done = true;
+                return;
+            }
+            if (line == 0) {
+                grid[line] = new byte[height];
+            } else {
+                byte[] upperline = grid[line - 1];
+                grid[line - 1] = grid[line];
+                grid[line] = upperline;
+            }
+            done = true;
+        }
     }
 }

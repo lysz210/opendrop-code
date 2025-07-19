@@ -5,15 +5,35 @@ import it.lysz210.fluitrix.models.Board;
 import it.lysz210.fluitrix.models.Orientation;
 import it.lysz210.fluitrix.models.Tetramino;
 import it.lysz210.fluitrix.utils.GridToStringMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.function.Consumer;
 
 public class MainForBoard {
+    static final Logger LOGGER = LoggerFactory.getLogger(MainForBoard.class);
+    static final int WIDTH = 14;
+    static final int HEIGHT = 8;
+
+    static final Board board = new Board(WIDTH, HEIGHT);
+    static GridToStringMapper toString = new GridToStringMapper();
+    static Consumer<Action> axecAndPrint = action -> {
+        action.execute();
+        LOGGER.info("{}", toString.apply(board));
+    };
 
     public static void main(String[] args) {
-        final var WIDTH = 14;
-        final var HEIGHT = 8;
-        final var toString = new GridToStringMapper();
 
-        final var board = new Board(WIDTH, HEIGHT);
+        testClear();
+
+    }
+
+    static void testClear() {
+        board.clearLines().forEach(axecAndPrint);
+    }
+
+    static void test1() {
+
         var tetramino = Tetramino.createI();
         tetramino.getInitializationSequence().forEach(Action::execute);
 
