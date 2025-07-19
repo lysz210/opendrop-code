@@ -17,13 +17,13 @@ public class PAppletTransmiter implements Transmitter {
 
     @Override
     public void transmit(boolean[][] electrodes) {
-        var width = electrodes.length;
-        var height = electrodes[0].length;
+        int width = electrodes.length;
+        int height = electrodes[0].length;
         applet.fill(170);
         for (int y = 0; y < width; y++) {
             for (int x = 1; x <= height; x++) {
-                var offsetX = offset.x() + ((x - 1) * cellSize);
-                var offsetY = offset.y() + (y * cellSize);
+                int offsetX = offset.x() + ((x - 1) * cellSize);
+                int offsetY = offset.y() + (y * cellSize);
                 if (electrodes[y][height - x]) {
                     applet.rect(offsetX, offsetY, cellSize, cellSize);
                 }
@@ -31,8 +31,8 @@ public class PAppletTransmiter implements Transmitter {
         }
 
         applet.fill(255, 1, 255);
-        var offsetX = offset.x();
-        var offsetY = offset.y() + (3 * cellSize);
+        int offsetX = offset.x();
+        int offsetY = offset.y() + (3 * cellSize);
         applet.line(offsetX, offsetY, offsetX + (height * cellSize), offsetY);
     }
 

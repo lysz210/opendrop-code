@@ -3,6 +3,7 @@ package it.lysz210.fluitrix.models;
 import it.lysz210.fluitrix.utils.GridMerger;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -61,8 +62,8 @@ public class Board implements Grid {
     }
 
     public boolean isTouchingFloor(Grid other) {
-        var offsetX = other.getPosition().x();
-        var offsetY = other.getPosition().y();
+        int offsetX = other.getPosition().x();
+        int offsetY = other.getPosition().y();
 
         if (offsetX >= this.getWidth() -1) {
             throw new RuntimeException("Is underground!");
@@ -77,16 +78,16 @@ public class Board implements Grid {
         }
 
         for (int x = other.getWidth() -1; x >= 0; x--) {
-            var newX = x + offsetX;
+            int newX = x + offsetX;
             if (newX >= this.getWidth() || newX < 0) {
                 continue;
             }
             for (int y = other.getHeight() -1; y >= 0; y--) {
-                var newY = y + offsetY;
+                int newY = y + offsetY;
                 if (newY >= this.getHeight() || newY < 0) {
                     continue;
                 }
-                var otherCellActive = other.getCell(new Coordinate2D(x, y)) > 0;
+                boolean otherCellActive = other.getCell(new Coordinate2D(x, y)) > 0;
                 if (!otherCellActive && newX + 1 >= this.getWidth()) {
                     continue;
                 }
@@ -99,7 +100,7 @@ public class Board implements Grid {
     }
 
     public List<Action> clearLines() {
-        var actionSequenceBuilder = Stream.<Action>builder();
+        Stream.Builder<Action> actionSequenceBuilder = Stream.builder();
         for (int x = 0; x < this.getWidth(); x++) {
             boolean isFull = true;
             for (int y = 0; y < this.getHeight() && isFull; y++) {
@@ -111,7 +112,7 @@ public class Board implements Grid {
                     .forEach(actionSequenceBuilder::add);
             }
         }
-        return actionSequenceBuilder.build().toList();
+        return actionSequenceBuilder.build().collect(Collectors.toList());
     }
 
     class BubbleUpAction implements Action {

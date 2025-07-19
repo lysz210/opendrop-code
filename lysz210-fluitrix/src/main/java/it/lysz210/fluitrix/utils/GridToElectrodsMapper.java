@@ -8,7 +8,7 @@ import java.util.function.Function;
 public class GridToElectrodsMapper implements Function<Grid, boolean[][]> {
     @Override
     public boolean[][] apply(Grid grid) {
-        var electrods = new boolean[grid.getWidth()][grid.getHeight()];
+        boolean[][] electrods = new boolean[grid.getWidth()][grid.getHeight()];
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 electrods[x][y] = grid.getCell(new Coordinate2D(x, y)) > 0;
@@ -18,7 +18,7 @@ public class GridToElectrodsMapper implements Function<Grid, boolean[][]> {
     }
 
     public boolean[][] apply(byte[][] grid) {
-        var electrods = new boolean[grid.length][grid[0].length];
+        boolean[][] electrods = new boolean[grid.length][grid[0].length];
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[0].length; y++) {
                 electrods[x][y] = grid[x][y] > 0;

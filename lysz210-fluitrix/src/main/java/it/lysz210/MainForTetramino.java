@@ -3,35 +3,32 @@ package it.lysz210;
 import it.lysz210.fluitrix.models.Action;
 import it.lysz210.fluitrix.models.Tetramino;
 import it.lysz210.fluitrix.utils.GridToStringMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
 public class MainForTetramino {
-    private static final Logger logger = LoggerFactory.getLogger(MainForTetramino.class);
 
     public static void main(String[] args) {
-        var toString = new GridToStringMapper();
-        var tetramino = Tetramino.createS();
+        GridToStringMapper toString = new GridToStringMapper();
+        Tetramino tetramino = Tetramino.createS();
         Consumer<Action> executeAndPrint = action -> {
             action.execute();
-            logger.info(
-                    "\nDir: {}{}",
+            System.out.printf(
+                    "Dir: %s%s\n",
                     tetramino.getOrientation().symbol,
                     toString.apply(tetramino)
             );
         };
-        logger.info("Init");
+        System.out.println("Init");
         tetramino.getInitializationSequence().forEach(executeAndPrint);
 
-        logger.info("rotate");
+        System.out.println("rotate");
         tetramino.getRotationSequence().forEach(executeAndPrint);
-        logger.info("rotate");
+        System.out.println("rotate");
         tetramino.getRotationSequence().forEach(executeAndPrint);
-        logger.info("rotate");
+        System.out.println("rotate");
         tetramino.getRotationSequence().forEach(executeAndPrint);
-        logger.info("rotate");
+        System.out.println("rotate");
         tetramino.getRotationSequence().forEach(executeAndPrint);
     }
 }

@@ -1,16 +1,16 @@
 package it.lysz210.fluitrix;
 
 import com.opendrop.commons.Transmitter;
-import it.lysz210.fluitrix.models.Board;
 import it.lysz210.fluitrix.models.Coordinate2D;
 import it.lysz210.fluitrix.models.Game;
 import it.lysz210.fluitrix.models.GameCommand;
-import it.lysz210.fluitrix.utils.GridToElectrodsMapper;
 import it.lysz210.utils.PAppletTransmiter;
 import processing.core.PApplet;
 import processing.core.PImage;
 
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Optional;
 
 public class Application extends PApplet {
     public static final Coordinate2D BOARD_OFFSET = new Coordinate2D(132, 225);
@@ -22,7 +22,7 @@ public class Application extends PApplet {
 
     @Override
     public void settings(){
-        var imageFile = this.getClass().getClassLoader().getResource("OpenDropFrame.png");
+        URL imageFile = this.getClass().getClassLoader().getResource("OpenDropFrame.png");
         try {
             transmitter = new PAppletTransmiter(this, BOARD_OFFSET, CELL_SIZE);
             img = loadImage(imageFile.toURI().getPath());
@@ -42,14 +42,14 @@ public class Application extends PApplet {
         background(255, 250, 240);
         image(img, 0, 0, img.width, img.height);
         game.process(GameCommand.PROCESS_STEP);
-        var electrods = game.electrode();
+        boolean[][] electrods = game.electrode();
         transmitter.transmit(electrods);
     }
 
     @Override
     public void keyPressed(){
-        var command = GameCommand.fromKey(key);
-        if (command.isEmpty()) {
+        Optional<GameCommand> command = GameCommand.fromKey(key);
+        if (!command.isPresent()) {
             return;
         }
         game.process(command.get());

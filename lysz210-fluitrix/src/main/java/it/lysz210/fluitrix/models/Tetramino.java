@@ -1,8 +1,10 @@
 package it.lysz210.fluitrix.models;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class Tetramino implements Grid {
@@ -57,8 +59,8 @@ public abstract class Tetramino implements Grid {
     }
 
     protected void moveDroplet(Movement movement) {
-        var source = movement.source();
-        var destination = movement.destination();
+        Coordinate2D source = movement.source();
+        Coordinate2D destination = movement.destination();
         if (getCell(source) > 0) {
             decDroplet(source);
             incDroplet(destination);
@@ -74,18 +76,18 @@ public abstract class Tetramino implements Grid {
 
     public List<Action> getInitializationSequence() {
         if (this.initialized) {
-            return List.of();
+            return Arrays.asList();
         }
         return Stream.concat(
                 internalInitializationSequence(),
                 Stream.of(() -> this.initialized = true)
-        ).toList();
+        ).collect(Collectors.toList());
     }
     public List<Action> getRotationSequence() {
         return Stream.concat(
                 internalRotationSequence(),
                 Stream.of(this::nextOrientation)
-        ).toList();
+        ).collect(Collectors.toList());
     }
 
     @Override
@@ -129,13 +131,13 @@ public abstract class Tetramino implements Grid {
         @Override
         protected Stream<Action> internalInitializationSequence() {
             return Stream.of(
-                    () -> incDroplet(List.of(
+                    () -> incDroplet(Arrays.asList(
                             TOP_CENTER,
                             CENTER_CENTER,
                             BOTTOM_CENTER,
                             TOP_LEFT
                     )),
-                    () -> moveDroplet(List.of(
+                    () -> moveDroplet(Arrays.asList(
                             TOP_LEFT.moveDown(),
                             TOP_CENTER.moveDown()
                     )),
@@ -145,24 +147,30 @@ public abstract class Tetramino implements Grid {
 
         @Override
         protected Stream<Action> internalRotationSequence() {
-            return switch (getOrientation()) {
-                case UP -> Stream.of(
+            switch (getOrientation()) {
+                case UP:
+                    return Stream.of(
                         () -> moveDroplet(CENTER_RIGHT.moveLeft()),
                         () -> moveDroplet(CENTER_CENTER.moveUp())
                 );
-                case RIGHT -> Stream.of(
+                case RIGHT:
+                    return Stream.of(
                         () -> moveDroplet(BOTTOM_CENTER.moveUp()),
                         () -> moveDroplet(CENTER_CENTER.moveRight())
                 );
-                case DOWN -> Stream.of(
+                case DOWN:
+                    return Stream.of(
                         () -> moveDroplet(CENTER_LEFT.moveRight()),
                         () -> moveDroplet(CENTER_CENTER.moveDown())
                 );
-                case LEFT -> Stream.of(
+                case LEFT:
+                    return Stream.of(
                         () -> moveDroplet(TOP_CENTER.moveDown()),
                         () -> moveDroplet(CENTER_CENTER.moveLeft())
                 );
-            };
+                default:
+                    throw new IllegalStateException("Unexpected value: " + getOrientation());
+            }
         }
     }
     static class J extends Tetramino {
@@ -170,7 +178,7 @@ public abstract class Tetramino implements Grid {
         @Override
         protected Stream<Action> internalInitializationSequence() {
             return Stream.of(
-                    () -> incDroplet(List.of(
+                    () -> incDroplet(Arrays.asList(
                             TOP_CENTER,
                             CENTER_CENTER,
                             BOTTOM_CENTER
@@ -181,57 +189,63 @@ public abstract class Tetramino implements Grid {
 
         @Override
         protected Stream<Action> internalRotationSequence() {
-            return switch (getOrientation()) {
-                case UP -> Stream.of(
-                        () -> moveDroplet(List.of(
+            switch (getOrientation()) {
+                case UP:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 BOTTOM_LEFT.moveUp(),
                                 TOP_CENTER.moveLeft(),
                                 BOTTOM_CENTER.moveUp()
                         )),
                         () -> moveDroplet(CENTER_CENTER.moveRight())
                 );
-                case RIGHT -> Stream.of(
-                        () -> moveDroplet(List.of(
+                case RIGHT:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 TOP_LEFT.moveRight(),
                                 CENTER_RIGHT.moveUp(),
                                 CENTER_LEFT.moveRight()
                         )),
                         () -> moveDroplet(CENTER_CENTER.moveDown())
                 );
-                case DOWN -> Stream.of(
-                        () -> moveDroplet(List.of(
+                case DOWN:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 BOTTOM_CENTER.moveRight(),
                                 TOP_RIGHT.moveDown(),
                                 TOP_CENTER.moveDown()
                         )),
                         () -> moveDroplet(CENTER_CENTER.moveLeft())
                 );
-                case LEFT -> Stream.of(
-                        () -> moveDroplet(List.of(
+                case LEFT:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 CENTER_LEFT.moveDown(),
                                 BOTTOM_RIGHT.moveLeft(),
                                 CENTER_RIGHT.moveLeft()
                         )),
                         () -> moveDroplet(CENTER_CENTER.moveUp())
                 );
-            };
+                default:
+                    throw new IllegalStateException("Unexpected value: " + getOrientation());
+            }
         }
     }
     static class O extends Tetramino {
         @Override
         protected Stream<Action> internalInitializationSequence() {
             return Stream.of(
-                    () -> incDroplet(List.of(
+                    () -> incDroplet(Arrays.asList(
                             TOP_CENTER, TOP_LEFT
                     )),
-                    () -> incDroplet(List.of(
+                    () -> incDroplet(Arrays.asList(
                             CENTER_CENTER, CENTER_LEFT
                     )),
-                    () -> moveDroplet(List.of(
+                    () -> moveDroplet(Arrays.asList(
                             TOP_CENTER.moveDown(),
                             TOP_LEFT.moveDown()
                     )),
-                    () -> moveDroplet(List.of(
+                    () -> moveDroplet(Arrays.asList(
                             CENTER_CENTER.moveDown(),
                             CENTER_LEFT.moveDown()
                     ))
@@ -247,13 +261,13 @@ public abstract class Tetramino implements Grid {
         @Override
         protected Stream<Action> internalInitializationSequence() {
             return Stream.of(
-                    () -> incDroplet(List.of(
+                    () -> incDroplet(Arrays.asList(
                             TOP_CENTER,
                             CENTER_CENTER,
                             BOTTOM_CENTER,
                             TOP_LEFT
                     )),
-                    () -> moveDroplet(List.of(
+                    () -> moveDroplet(Arrays.asList(
                             TOP_LEFT.moveDown(),
                             TOP_CENTER.moveDown(),
                             CENTER_CENTER.moveDown(),
@@ -264,41 +278,47 @@ public abstract class Tetramino implements Grid {
 
         @Override
         protected Stream<Action> internalRotationSequence() {
-            return switch (getOrientation()) {
-                case UP, DOWN -> Stream.of(
-                        () -> moveDroplet(List.of(
+            switch (getOrientation()) {
+                case UP:
+                case DOWN:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 BOTTOM_CENTER.moveUp(),
                                 BOTTOM_RIGHT.moveLeft()
                         )),
-                        () -> moveDroplet(List.of(
+                        () -> moveDroplet(Arrays.asList(
                                 BOTTOM_CENTER.moveLeft(),
                                 CENTER_CENTER.moveUp()
                         ))
                 );
-                case RIGHT, LEFT -> Stream.of(
-                        () -> moveDroplet(List.of(
+                case RIGHT:
+                case LEFT:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 TOP_CENTER.moveDown(),
                                 BOTTOM_LEFT.moveRight()
                         )),
-                        () -> moveDroplet(List.of(
+                        () -> moveDroplet(Arrays.asList(
                                 BOTTOM_CENTER.moveRight(),
                                 CENTER_CENTER.moveDown()
                         ))
                 );
-            };
+                default:
+                    throw new IllegalStateException("Unexpected value: " + getOrientation());
+            }
         }
     }
     static class S extends Tetramino {
         @Override
         protected Stream<Action> internalInitializationSequence() {
             return Stream.of(
-                    () -> incDroplet(List.of(
+                    () -> incDroplet(Arrays.asList(
                             TOP_CENTER,
                             CENTER_CENTER,
                             BOTTOM_CENTER,
                             TOP_RIGHT
                     )),
-                    () -> moveDroplet(List.of(
+                    () -> moveDroplet(Arrays.asList(
                             TOP_RIGHT.moveDown(),
                             TOP_CENTER.moveDown(),
                             CENTER_CENTER.moveDown(),
@@ -309,28 +329,34 @@ public abstract class Tetramino implements Grid {
 
         @Override
         protected Stream<Action> internalRotationSequence() {
-            return switch (getOrientation()) {
-                case UP, DOWN -> Stream.of(
-                        () -> moveDroplet(List.of(
+            switch (getOrientation()) {
+                case UP:
+                case DOWN:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 BOTTOM_LEFT.moveUp(),
                                 CENTER_RIGHT.moveLeft()
                         )),
-                        () -> moveDroplet(List.of(
+                        () -> moveDroplet(Arrays.asList(
                                 CENTER_LEFT.moveUp(),
                                 CENTER_CENTER.moveLeft()
                         ))
                 );
-                case RIGHT, LEFT -> Stream.of(
-                        () -> moveDroplet(List.of(
+                case RIGHT:
+                case LEFT:
+                    return Stream.of(
+                        () -> moveDroplet(Arrays.asList(
                                 TOP_LEFT.moveDown(),
                                 CENTER_LEFT.moveRight()
                         )),
-                        () -> moveDroplet(List.of(
+                        () -> moveDroplet(Arrays.asList(
                                 CENTER_LEFT.moveDown(),
                                 CENTER_CENTER.moveRight()
                         ))
                 );
-            };
+                default:
+                    throw new IllegalStateException("Unexpected value: " + getOrientation());
+            }
         }
     }
 
@@ -341,7 +367,7 @@ public abstract class Tetramino implements Grid {
 
         @Override
         protected Stream<Action> internalInitializationSequence() {
-            return Stream.of(() -> incDroplet(List.of(
+            return Stream.of(() -> incDroplet(Arrays.asList(
                     TOP_CENTER,
                     CENTER_CENTER,
                     BOTTOM_CENTER
@@ -350,28 +376,34 @@ public abstract class Tetramino implements Grid {
 
         @Override
         protected Stream<Action> internalRotationSequence(){
-            return switch (this.getOrientation()) {
-                case UP, DOWN -> Stream.of(
-                        () -> this.moveDroplet(List.of(
+            switch (this.getOrientation()) {
+                case UP:
+                case DOWN:
+                    return Stream.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                     TOP_CENTER.moveDown(),
                                     BOTTOM_CENTER.moveUp()
                             )),
-                        () -> this.moveDroplet(List.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                     CENTER_CENTER.moveLeft(),
                                     CENTER_CENTER.moveRight()
                             ))
                 );
-                case RIGHT, LEFT -> Stream.of(
-                        () -> this.moveDroplet(List.of(
+                case RIGHT:
+                case LEFT:
+                    return Stream.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                 CENTER_LEFT.moveRight(),
                                 CENTER_RIGHT.moveLeft()
                         )),
-                        () -> this.moveDroplet(List.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                 CENTER_CENTER.moveUp(),
                                 CENTER_CENTER.moveDown()
                             ))
                 );
-            };
+                default:
+                    throw new IllegalStateException("Unexpected value: " + getOrientation());
+            }
         }
     }
 
@@ -380,7 +412,7 @@ public abstract class Tetramino implements Grid {
         @Override
         protected Stream<Action> internalInitializationSequence() {
             return Stream.of(
-                () -> incDroplet(List.of(
+                () -> incDroplet(Arrays.asList(
                     TOP_CENTER,
                     CENTER_CENTER,
                     BOTTOM_CENTER
@@ -391,40 +423,46 @@ public abstract class Tetramino implements Grid {
 
         @Override
         protected Stream<Action> internalRotationSequence() {
-            return switch (this.getOrientation()) {
-                case UP -> Stream.of(
-                        () -> this.moveDroplet(List.of(
+            switch (this.getOrientation()) {
+                case UP:
+                    return Stream.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                 BOTTOM_RIGHT.moveUp(),
                                 BOTTOM_CENTER.moveLeft(),
                                 TOP_CENTER.moveDown()
                         )),
                         () -> this.moveDroplet(CENTER_CENTER.moveLeft())
                 );
-                case RIGHT -> Stream.of(
-                        () -> this.moveDroplet(List.of(
+                case RIGHT:
+                    return Stream.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                 CENTER_LEFT.moveUp(),
                                 BOTTOM_LEFT.moveRight(),
                                 CENTER_RIGHT.moveLeft()
                         )),
                         () -> this.moveDroplet(CENTER_CENTER.moveUp())
                 );
-                case DOWN -> Stream.of(
-                        () -> this.moveDroplet(List.of(
+                case DOWN:
+                    return Stream.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                 TOP_LEFT.moveDown(),
                                 TOP_CENTER.moveRight(),
                                 BOTTOM_CENTER.moveUp()
                         )),
                         () -> this.moveDroplet(CENTER_CENTER.moveRight())
                 );
-                case LEFT -> Stream.of(
-                        () -> this.moveDroplet(List.of(
+                case LEFT:
+                    return Stream.of(
+                        () -> this.moveDroplet(Arrays.asList(
                                 TOP_RIGHT.moveLeft(),
                                 CENTER_RIGHT.moveDown(),
                                 CENTER_LEFT.moveRight()
                         )),
                         () -> this.moveDroplet(CENTER_CENTER.moveDown())
                 );
-            };
+                default:
+                    throw new IllegalStateException("Unexpected value: " + getOrientation());
+            }
         }
     }
 
@@ -455,7 +493,7 @@ public abstract class Tetramino implements Grid {
         return new S();
     }
 
-    private static final List<Supplier<Tetramino>> PRODUCERS = List.of(
+    private static final List<Supplier<Tetramino>> PRODUCERS = Arrays.asList(
             Tetramino::createI,
             Tetramino::createL,
             Tetramino::createJ,
@@ -465,7 +503,7 @@ public abstract class Tetramino implements Grid {
             Tetramino::createS
     );
     public static Tetramino createRandom() {
-        var rnd = new Random();
+        Random rnd = new Random();
         return PRODUCERS.get(rnd.nextInt(PRODUCERS.size())).get();
     }
 

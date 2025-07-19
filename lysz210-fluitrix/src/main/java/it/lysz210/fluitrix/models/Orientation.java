@@ -13,11 +13,17 @@ public enum Orientation {
     }
 
     public Orientation next() {
-        return switch (this) {
-            case UP -> RIGHT;
-            case RIGHT -> DOWN;
-            case DOWN -> LEFT;
-            case LEFT -> UP;
-        };
+        switch (this) {
+            case UP:
+                return RIGHT;
+            case RIGHT:
+                return DOWN;
+            case DOWN:
+                return LEFT;
+            case LEFT:
+                return UP;
+            default:
+                throw new IllegalStateException("Unexpected value: " + this);
+        }
     }
 }

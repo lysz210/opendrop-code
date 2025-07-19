@@ -8,8 +8,8 @@ import java.util.function.Function;
 public class GridToStringMapper implements Function<Grid, String> {
     @Override
     public String apply(Grid grid) {
-        var width = grid.getWidth();
-        var height = grid.getHeight();
+        int width = grid.getWidth();
+        int height = grid.getHeight();
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
         for (int x = 0; x < width; x++) {

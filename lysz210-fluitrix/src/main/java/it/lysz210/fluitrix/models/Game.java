@@ -2,30 +2,30 @@ package it.lysz210.fluitrix.models;
 
 import it.lysz210.fluitrix.utils.GridMerger;
 import it.lysz210.fluitrix.utils.GridToElectrodsMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Game {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
-
     public enum Phase {
-        INITIALIZATION(Set.of(GameCommand.PROCESS_STEP)),
-        INIT_TETRAMINO(Set.of(GameCommand.PROCESS_STEP)),
-        TETRAMINO_INPUT(Set.of(GameCommand.ROTATE, GameCommand.MOVE_LEFT, GameCommand.MOVE_RIGHT, GameCommand.DROP_DOWN)),
-        CLEAR_LINES(Set.of(GameCommand.PROCESS_STEP)),
-        CHECK(Set.of(GameCommand.PROCESS_STEP)),
-        ACTION(Set.of(GameCommand.PROCESS_STEP)),
-        GAME_OVER(Set.of(GameCommand.RESET));
+        INITIALIZATION(GameCommand.PROCESS_STEP),
+        INIT_TETRAMINO(GameCommand.PROCESS_STEP),
+        TETRAMINO_INPUT(GameCommand.ROTATE, GameCommand.MOVE_LEFT, GameCommand.MOVE_RIGHT, GameCommand.DROP_DOWN),
+        CLEAR_LINES(GameCommand.PROCESS_STEP),
+        CHECK(GameCommand.PROCESS_STEP),
+        ACTION(GameCommand.PROCESS_STEP),
+        GAME_OVER(GameCommand.RESET);
 
         public final Set<GameCommand> acceptedCommands;
 
-        Phase(Set<GameCommand> acceptedCommands){
-            this.acceptedCommands = acceptedCommands;
+        Phase(GameCommand ...acceptedCommands){
+            Stream.Builder<GameCommand> builder = Stream.builder();
+            for (GameCommand command: acceptedCommands) {
+                builder.add(command);
+            }
+            this.acceptedCommands = builder.build().collect(Collectors.toSet());
         }
 
         public boolean accept(GameCommand command){
@@ -66,7 +66,7 @@ public class Game {
     public void process(GameCommand command) {
         if (!currentPhase.accept(command)) {
             if (currentPhase == Phase.GAME_OVER) {
-                LOGGER.warn("==== Game over ====");
+                System.out.println("==== Game over ====");
             }
             return;
         }
@@ -74,7 +74,10 @@ public class Game {
             case PROCESS_STEP:
                 process();
                 break;
-            case ROTATE, DROP_DOWN, MOVE_LEFT, MOVE_RIGHT:
+            case ROTATE:
+            case DROP_DOWN:
+            case MOVE_LEFT:
+            case MOVE_RIGHT:
                 processInput(command);
                 break;
             case RESET:
@@ -99,7 +102,7 @@ public class Game {
     }
 
     private void processInput(GameCommand command) {
-        LOGGER.info("Processing input command {}", command);
+        System.out.printf("Processing input command %s\n", command);
         switch (command) {
             case ROTATE:
                 actionsQueue.addAll(tetramino.getRotationSequence());
@@ -131,13 +134,13 @@ public class Game {
 
     private void process() {
         switch (currentPhase) {
-            case Phase.INITIALIZATION:
+            case INITIALIZATION:
                 initTetramino();
                 return;
-            case Phase.CLEAR_LINES:
+            case CLEAR_LINES:
                 clearLines();
                 return;
-            case Phase.CHECK:
+            case CHECK:
                 check();
                 return;
             default:
@@ -146,7 +149,7 @@ public class Game {
         if (actionsQueue.isEmpty()) {
             return;
         }
-        var action = actionsQueue.remove();
+        Action action = actionsQueue.remove();
         action.execute();
     }
 

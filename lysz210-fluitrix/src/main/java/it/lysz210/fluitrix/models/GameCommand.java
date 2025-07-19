@@ -17,13 +17,38 @@ public enum GameCommand {
     }
 
     public static Optional<GameCommand> fromKey(int key) {
-        return Optional.ofNullable(switch (key) {
-            case KeyEvent.VK_UP, 'w', 'W' -> ROTATE;
-            case KeyEvent.VK_DOWN, 's', 'S', ' ', '\n' -> DROP_DOWN;
-            case KeyEvent.VK_RIGHT, 'd', 'D' -> MOVE_RIGHT;
-            case KeyEvent.VK_LEFT, 'a', 'A' -> MOVE_LEFT;
-            case 'r', 'R' -> RESET;
-            default -> null;
-        });
+        GameCommand command;
+        switch (key) {
+            case KeyEvent.VK_UP:
+            case 'w':
+            case 'W':
+                command = ROTATE;
+                break;
+            case KeyEvent.VK_DOWN:
+            case 's':
+            case 'S':
+            case ' ':
+            case '\n':
+                command = DROP_DOWN;
+                break;
+            case KeyEvent.VK_RIGHT:
+            case 'd':
+            case 'D':
+                command = MOVE_RIGHT;
+                break;
+            case KeyEvent.VK_LEFT:
+            case 'a':
+            case 'A':
+                command = MOVE_LEFT;
+                break;
+            case 'r':
+            case  'R':
+                command = RESET;
+                break;
+            default:
+                command = null;
+        }
+
+        return Optional.ofNullable(command);
     }
 }
