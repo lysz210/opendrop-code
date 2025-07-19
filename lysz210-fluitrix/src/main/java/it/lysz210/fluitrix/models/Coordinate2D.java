@@ -20,7 +20,7 @@ public class Coordinate2D {
     }
 
     public Movement move(Orientation direction) {
-        return Movement.of(new Coordinate2D(this), direction);
+        return new Movement(new Coordinate2D(this), direction);
     }
 
     public Movement moveUp() {

@@ -14,8 +14,8 @@ public class Movement {
         this.source = source;
         this.destination = destination;
     }
-    public static Movement of(Coordinate2D source, Orientation direction) {
-        Coordinate2D destination = null;
+    public Movement(Coordinate2D source, Orientation direction) {
+        this.source = source;
         switch (direction) {
             case UP:
                 destination = new Coordinate2D(source.x() - 1, source.y());
@@ -29,7 +29,8 @@ public class Movement {
             case RIGHT:
                 destination = new Coordinate2D(source.x(), source.y() - 1);
                 break;
+            default:
+                    throw  new IllegalArgumentException("Invalid direction");
         }
-        return new Movement(source, destination);
     }
 }

@@ -2,10 +2,8 @@ package it.lysz210.fluitrix.models;
 
 import it.lysz210.fluitrix.utils.GridMerger;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Board implements Grid {
     private final int width;
@@ -21,10 +19,6 @@ public class Board implements Grid {
         this.grid = new byte[width][height];
         this.position = new Coordinate2D(0, 0);
         this.merger = new GridMerger();
-
-        for (int i = 0; i < height; i++) {
-            grid[13][i] = 1;
-        }
     }
 
     @Override
@@ -100,19 +94,19 @@ public class Board implements Grid {
     }
 
     public List<Action> clearLines() {
-        Stream.Builder<Action> actionSequenceBuilder = Stream.builder();
+        List<Action> actionSequenceBuilder = new ArrayList<>();
         for (int x = 0; x < this.getWidth(); x++) {
             boolean isFull = true;
             for (int y = 0; y < this.getHeight() && isFull; y++) {
                 isFull = grid[x][y] > 0;
             }
             if (isFull) {
-                IntStream.iterate(x, n -> n - 1).limit(x + 1)
-                    .mapToObj(BubbleUpAction::new)
-                    .forEach(actionSequenceBuilder::add);
+                for (int i = x; i >= 0; i--) {
+                    actionSequenceBuilder.add(new BubbleUpAction(i));
+                }
             }
         }
-        return actionSequenceBuilder.build().collect(Collectors.toList());
+        return actionSequenceBuilder;
     }
 
     class BubbleUpAction implements Action {

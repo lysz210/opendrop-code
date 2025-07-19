@@ -3,35 +3,11 @@ package it.lysz210.fluitrix.models;
 import it.lysz210.fluitrix.utils.GridMerger;
 import it.lysz210.fluitrix.utils.GridToElectrodsMapper;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Game {
 
-    public enum Phase {
-        INITIALIZATION(GameCommand.PROCESS_STEP),
-        INIT_TETRAMINO(GameCommand.PROCESS_STEP),
-        TETRAMINO_INPUT(GameCommand.ROTATE, GameCommand.MOVE_LEFT, GameCommand.MOVE_RIGHT, GameCommand.DROP_DOWN),
-        CLEAR_LINES(GameCommand.PROCESS_STEP),
-        CHECK(GameCommand.PROCESS_STEP),
-        ACTION(GameCommand.PROCESS_STEP),
-        GAME_OVER(GameCommand.RESET);
-
-        public final Set<GameCommand> acceptedCommands;
-
-        Phase(GameCommand ...acceptedCommands){
-            Stream.Builder<GameCommand> builder = Stream.builder();
-            for (GameCommand command: acceptedCommands) {
-                builder.add(command);
-            }
-            this.acceptedCommands = builder.build().collect(Collectors.toSet());
-        }
-
-        public boolean accept(GameCommand command){
-            return acceptedCommands.contains(command);
-        }
-    }
     private Board board;
     private Tetramino tetramino;
     private Phase currentPhase;
