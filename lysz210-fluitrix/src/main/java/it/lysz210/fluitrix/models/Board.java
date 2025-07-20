@@ -55,6 +55,25 @@ public class Board implements Grid {
         this.grid = this.merger.apply(this, other);
     }
 
+    public boolean canMoveTetraminoTo(Tetramino tetramino, Orientation direction) {
+        Coordinate2D tetraminoPosition = tetramino.getPosition();
+        Coordinate2D newPosition = tetraminoPosition.move(direction).destination();
+        int offsetY = newPosition.y();
+
+        for (int y = 0; y < tetramino.getWidth(); y++) {
+            int newY = y + offsetY;
+            if (0 <= newY && newY < this.height) {
+                continue;
+            }
+            for (int x = 0; x < tetramino.getHeight(); x++) {
+                if (tetramino.getCell(new Coordinate2D(x, y)) > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean isTouchingFloor(Grid other) {
         int offsetX = other.getPosition().x();
         int offsetY = other.getPosition().y();

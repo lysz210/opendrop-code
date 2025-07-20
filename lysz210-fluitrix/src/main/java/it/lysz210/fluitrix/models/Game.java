@@ -79,26 +79,35 @@ public class Game {
 
     private void processInput(GameCommand command) {
         System.out.printf("Processing input command %s\n", command);
+        Phase nextPhase = Phase.ACTION;
         switch (command) {
             case ROTATE:
                 actionsQueue.addAll(tetramino.getRotationSequence());
                 actionsQueue.add(() -> this.currentPhase = Phase.TETRAMINO_INPUT);
                 break;
             case MOVE_LEFT:
-                actionsQueue.add(() -> tetramino.move(Orientation.LEFT));
-                actionsQueue.add(() -> this.currentPhase = Phase.TETRAMINO_INPUT);
+                if (board.canMoveTetraminoTo(tetramino,  Orientation.LEFT)) {
+                    actionsQueue.add(() -> tetramino.move(Orientation.LEFT));
+                    actionsQueue.add(() -> this.currentPhase = Phase.TETRAMINO_INPUT);
+                } else {
+                    nextPhase = currentPhase;
+                }
                 break;
             case MOVE_RIGHT:
-                actionsQueue.add(() -> tetramino.move(Orientation.RIGHT));
-                actionsQueue.add(() -> this.currentPhase = Phase.TETRAMINO_INPUT);
+                if (board.canMoveTetraminoTo(tetramino,  Orientation.RIGHT)) {
+                    actionsQueue.add(() -> tetramino.move(Orientation.RIGHT));
+                    actionsQueue.add(() -> this.currentPhase = Phase.TETRAMINO_INPUT);
+                } else {
+                    nextPhase = currentPhase;
+                }
                 break;
             case DROP_DOWN:
                 actionsQueue.add(new DropDown());
                 break;
             default:
-                return;
+                nextPhase = currentPhase;
         }
-        this.currentPhase = Phase.ACTION;
+        this.currentPhase = nextPhase;
     }
 
     private void initTetramino () {
